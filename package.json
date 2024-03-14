@@ -1,0 +1,15 @@
+{
+  "name": "enpassantasaurus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "enpassantasaurus"
+  },
+  "author": "Asher Grizzaffi",
+  "license": "ISC"
+}
