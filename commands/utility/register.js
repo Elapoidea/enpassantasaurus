@@ -1,19 +1,39 @@
 const { SlashCommandBuilder } = require('discord.js');
+const http = require('http');
+const { JSDOM } = require("jsdom")
 
-function register(interaction) {
-	const id = interaction.options.getInteger('uscf_id');
-
-	const http = require('http');
-
-	//https://www.uschess.org/msa/thin.php?30656638
-	const req = http.request(`http://www.uschess.org/msa/thin.php?${id}`, res => {
+async function get_data(id) {
+	return new Promise((resolve, reject) => {
 		const data = [];
 
-		res.on('data', _ => data.push(_))
-		res.on('end', () => console.log(data.join()))
+		const req = http.request(`http://www.uschess.org/msa/thin.php?${id}`, res => {
+			res.on('data', _ => data.push(_))
+			res.on('end', () => resolve(data.join()))
+		});
+	
+		req.end();
+	})
+}
+
+async function get_name(id) {
+	const HTML = await get_data(id);
+
+	const dom = new JSDOM(HTML, {
+		runScripts: "dangerously",
+		resources: "usable"
 	});
 
-	req.end();
+	let name = dom.window.document.querySelector('[name=memname]').value;
+
+	console.log(name)
+
+	return name
+}
+
+async function register(interaction) {
+	const id = interaction.options.getInteger('uscf_id');
+
+	console.log(await get_name(id));
 
 	interaction.reply({ content: `http://www.uschess.org/msa/thin.php?${id}`, ephemeral: true });
 }
@@ -28,6 +48,13 @@ module.exports = {
 			.setDescription('Adds a player to the leaderboard')
 		),
 	async execute(interaction) {
-		await register(interaction)
+		await interaction.reply({ content: 'Searching for person ... ', ephemeral: true });
+
+		// await register(interaction)
+		const id = interaction.options.getInteger('uscf_id');
+
+		let name = await get_name(id);
+	
+		await interaction.editReply({ content: `Are you looking for ${name}`,  })
 	},
 };
