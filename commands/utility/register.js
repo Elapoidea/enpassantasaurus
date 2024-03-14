@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
 const http = require('http');
 const { JSDOM } = require("jsdom")
 
@@ -25,17 +25,41 @@ async function get_name(id) {
 
 	let name = dom.window.document.querySelector('[name=memname]').value;
 
-	console.log(name)
-
 	return name
 }
 
+function fix_capitalization(name) {
+	let n = name.split(" ")
+
+	n.forEach( (l, i) => { n[i] = l[0] + l.substr(1).toLowerCase() })
+
+	return n.join(" ");
+}
+
 async function register(interaction) {
+	await interaction.reply({ content: 'Searching for person ... ', ephemeral: true });
+
 	const id = interaction.options.getInteger('uscf_id');
 
-	console.log(await get_name(id));
+	let name = fix_capitalization(await get_name(id));
 
-	interaction.reply({ content: `http://www.uschess.org/msa/thin.php?${id}`, ephemeral: true });
+	const confirm = new ButtonBuilder()
+		.setCustomId('confirm')
+		.setLabel('Yes, register them')
+		.setStyle(ButtonStyle.Success);
+
+	const cancel = new ButtonBuilder()
+		.setCustomId('cancel')
+		.setLabel('No, wrong person')
+		.setStyle(ButtonStyle.Danger);
+
+	const row = new ActionRowBuilder()
+		.addComponents(confirm, cancel);
+
+	await interaction.editReply({ 
+		content: `Are you looking for ${name}?`,  
+		components: [row],
+	})
 }
 
 module.exports = {
@@ -48,13 +72,6 @@ module.exports = {
 			.setDescription('Adds a player to the leaderboard')
 		),
 	async execute(interaction) {
-		await interaction.reply({ content: 'Searching for person ... ', ephemeral: true });
-
-		// await register(interaction)
-		const id = interaction.options.getInteger('uscf_id');
-
-		let name = await get_name(id);
-	
-		await interaction.editReply({ content: `Are you looking for ${name}`,  })
+		register(interaction)
 	},
 };
