@@ -11,5 +11,9 @@
     "url": "enpassantasaurus"
   },
   "author": "Asher Grizzaffi",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "jsdom": "^24.0.0"
+  }
 }
