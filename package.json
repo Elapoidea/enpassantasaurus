@@ -13,6 +13,7 @@
   "author": "Asher Grizzaffi",
   "license": "ISC",
   "dependencies": {
+    "canvas": "^2.11.2",
     "discord.js": "^14.14.1",
     "jsdom": "^24.0.0"
   }
