@@ -4,7 +4,7 @@ const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
 let { read_json, write_json } = require('./utils');
-let { update_rating, update_all_players } = require('./data_management');
+let { update_rating, update_all_players, update_all_ratings } = require('./data_management');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -12,7 +12,7 @@ client.once(Events.ClientReady, async readyClient => {
 	console.log(`${readyClient.user.tag} is now online.`);
 	console.log('Starting the data collection.');
 
-	await update_all_players();
+	await update_all_ratings();
 
 	console.log('Finished collecting data.');
 });

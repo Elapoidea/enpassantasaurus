@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder, ActionRowBuilder,StringSelectMenuBuilder, StringSelectMenuOptionBuilder } = require('discord.js');
 const { createCanvas } = require('canvas');
 let { read_json } = require('../../utils');
 
@@ -36,67 +36,95 @@ function merge_data(data) {
 }
 
 async function leaderboard(interaction) {
-	let data = arranged_data();
+	let metric = interaction.options.getString('metric');
 
-	let canvas = createCanvas(3000, 1500);
+	let data = get_players();
+
+	data.sort((a, b) => { return b[1][metric] - a[1][metric] });
+
+	let canvas = createCanvas(3000, 1550);
 	let ctx = canvas.getContext('2d');
 
 	ctx.font = 'bold 120px Arial';
 	ctx.fillStyle = '#FFFFFF';
 	ctx.textBaseline = 'top';
 
-	ctx.fillText(`Name`, 0, 0);
-	ctx.fillText(`Rating`, 1200, 0);
-	ctx.fillText(`Score`, 1700, 0);
-	ctx.fillText(`Group `, 2200, 0);
+	ctx.fillText(`NAME`, 0, 0);
+	ctx.fillText(metric.toUpperCase(), 1200, 0);
+	ctx.fillText(`GROUP`, 2500, 0);
 
-	ctx.font = '120px Arial';
+	let i = 0
 
-	for (i=0; i<data.length; i++) {
-		let full_name = data[i][0]
-		let non_alphabetic_index = full_name.search(/[^A-Za-z]/);
-		let space_index = full_name.indexOf(' ');
-		let n = full_name.slice(0, non_alphabetic_index) + full_name.slice(space_index, space_index + 2);
+	for (d of data) {
+		let n = data[i][0];
+		let m = data[i][1][metric];
+		let a = data[i][1]['affiliation'];
 
-		let y = 2000 / 15 * i + 200;
+		if (m == -1) {
+			continue;
+		}
+
+		let y = 2000 / 15 * i + 150;
 
 		ctx.fillText(`${i+1}. ${n}`, 0, y);
-		ctx.fillText(`${data[i][1]}`, 1200, y);
-		ctx.fillText(`${data[i][3]}`, 1700, y);
-		ctx.fillText(`${data[i][2]} `, 2200, y);
+		ctx.fillText(`${m}`, 1200, y);
+		ctx.fillText(`${a}`, 2500, y);
+
+		i += 1;
 	}
 
 	let attachment = new AttachmentBuilder(canvas.toBuffer(), { name: `leaderboard.png` });
 
 	const exampleEmbed = new EmbedBuilder()
-		// .addFields(
-		// 	{ name: 'Name', value: ' ', inline: true },
-		// 	{ name: 'Rating', value: ' ', inline: true },
-		// 	{ name: 'Affiliation', value: ' ', inline: true },
-		// 	// { name: ' ', value: data[0].join('\n'), inline: true },
-		// 	// { name: ' ', value: data[1].join('\n'), inline: true },
-		// 	// { name: ' ', value: data[2].join('\n'), inline: true },
-			
-		// )
 		.setTitle('Leaderboard')
 		.setColor(0x004088)
-		.setTimestamp()
 		.setImage('attachment://leaderboard.png')
 
-	// for (i of data) {
-	// 	exampleEmbed.addFields(	{ name: ' ', value: i, inline: false });
-	// }
+	const select = new StringSelectMenuBuilder()
+		.setCustomId('starter')
+		.setPlaceholder('Make a selection!')
+		.addOptions(
+			new StringSelectMenuOptionBuilder()
+				.setLabel('Bulbasaur')
+				.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+				.setValue('bulbasaur'),
+			new StringSelectMenuOptionBuilder()
+				.setLabel('Charmander')
+				.setDescription('The Fire-type Lizard Pokémon.')
+				.setValue('charmander'),
+			new StringSelectMenuOptionBuilder()
+				.setLabel('Squirtle')
+				.setDescription('The Water-type Tiny Turtle Pokémon.')
+				.setValue('squirtle'),
+		);
 
-	// exampleEmbed.addFields(	{ name: ' ', value: data, inline: false });
+	for (i of ['rating', 'test', 'blitz']) {
+		select.addOptions(
+			new StringSelectMenuOptionBuilder()
+				.setLabel(i)
+				.setDescription(i)
+				.setValue(i)
+		)
+	}
 
-	await interaction.reply({ content: '', embeds: [exampleEmbed], ephemeral: true, files: [attachment] });
+	const row = new ActionRowBuilder()
+		.addComponents(select);
+
+
+	await interaction.reply({ content: '', embeds: [exampleEmbed], ephemeral: true, files: [attachment], components: [row] });
 }
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('leaderboard')
-		.setDescription('Replies with Pong!'),
+		.setDescription('Displays a leaderboard')
+		.addStringOption(option =>
+			option.setName('metric')
+			.setRequired(true)
+			.setDescription('The metric to use to determine the rankings.')),
 	async execute(interaction) {
 		leaderboard(interaction);
 	},
 };
+
+

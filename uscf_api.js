@@ -33,12 +33,11 @@ async function get_player_rating(id) {
 	}
 
 	let HTML = await get_tournaments_page(id);
-
+	
 	let dom = new JSDOM(HTML, {
 		runScripts: 'dangerously',
 		resources: 'usable'
 	});
-
 
 	let tournaments = Object.values(dom.window.document.querySelectorAll('td')).filter((t) => t.width == 160)
 	let latest = tournaments[0].innerHTML;
