@@ -3,10 +3,18 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
+let { read_json, write_json } = require('./utils');
+let { update_rating, update_all_players } = require('./data_management');
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once(Events.ClientReady, readyClient => {
-	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+client.once(Events.ClientReady, async readyClient => {
+	console.log(`${readyClient.user.tag} is now online.`);
+	console.log('Starting the data collection.');
+
+	await update_all_players();
+
+	console.log('Finished collecting data.');
 });
 
 client.login(token);

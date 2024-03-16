@@ -1,18 +1,15 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const { createCanvas } = require('canvas');
+let { read_json } = require('../../utils');
 
 function get_players() {
-	fs = require('fs');
-
-	let file_name = 'players.json';
-
-	let m = Object.values(JSON.parse(fs.readFileSync(file_name).toString()))
+	let m = Object.entries(read_json('registry'))
 
 	return m;
 }
 
 function arranged_data() {
-	let l = get_players().map(i => [i.name, i.rating, i.affiliation]);
+	let l = get_players().map(i => [i[0], i[1].rating, i[1].affiliation]);
 
 	l.sort((a, b) => { return b[1] - a[1] });
 
@@ -40,9 +37,6 @@ function merge_data(data) {
 
 async function leaderboard(interaction) {
 	let data = arranged_data();
-	
-
-	console.log(data);
 
 	let canvas = createCanvas(3000, 1500);
 	let ctx = canvas.getContext('2d');
