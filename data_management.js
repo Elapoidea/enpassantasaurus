@@ -68,6 +68,7 @@ async function update_player(name, f) {
 
 async function add_score(metric, amount, name) {
 	await  update_player(name, (data, datum) => {
+		if (data[datum[0]][metric] == -1) { amount += 1 }
 		data[datum[0]][metric] += amount
 	})
 }
