@@ -4,6 +4,21 @@ let { get_player_name } = require('../../uscf_api');
 let { save_player } = require('../../data_management');
 let { read_json, write_json } = require('../../utils');
 
+
+async function confirm(name, id, affiliation) {
+	let d = read_json('registry');
+		
+	if (Object.keys(d).includes(name)) {
+		await confirmation.update({ content: `${name} has already been added`, components: [] });
+		return;
+	}
+
+	await save_player(d, name, id, affiliation);
+
+	write_json('registry', d);
+
+}
+
 async function uscf(interaction) {
 	await interaction.reply({ content: 'Searching for person ... ', ephemeral: true });
 
@@ -35,16 +50,7 @@ async function uscf(interaction) {
 		const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 });
 	
 		if (confirmation.customId === 'confirm') {
-			let d = read_json('registry');
-		
-			if (Object.keys(d).includes(name)) {
-				await confirmation.update({ content: `${name} has already been added`, components: [] });
-				return;
-			}
-		
-			save_player(d, name, id, affiliation);
-		
-			write_json('registry', d);
+			await confirm(name, id, affiliation);
 
 			await confirmation.update({ content: 'Confirmed', components: [] });
 		} else if (confirmation.customId === 'cancel') {
@@ -60,7 +66,7 @@ async function unrated(interaction) {
 	let name = `${interaction.options.getString('first_name')} ${interaction.options.getString('last_initial')}`;
 	let affiliation = interaction.options.getString('affiliation');
 
-	save_player(name, 0, affiliation);
+	await confirm(name, 0, affiliation);
 
 	await interaction.reply({ content: `Added ${name}`, ephemeral: true });
 }

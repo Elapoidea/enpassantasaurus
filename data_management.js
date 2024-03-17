@@ -6,13 +6,20 @@ async function save_player(data, name, id, affiliation) {
 	data[name] = { 'uscf': id, 'affiliation': affiliation};
 
 	await update_rating(data, [name, data[name]]);
+
+	let m = read_json('metrics');
+
+	for (i of Object.entries(m)) {
+        data[name][i[0]] = i[1];
+	}
+
+	write_json('metrics', m);
 }
 
 async function update_all_players(f) {
 	let r = read_json('registry');
 
 	for (i of Object.entries(r)) {
-		// await update_rating(r, i[0], i[1]['uscf']);
         await f(r, i);
 	}
 
@@ -28,12 +35,24 @@ async function update_all_ratings() {
 }
 
 async function add_metric(metric, default_value) {
+	let m = read_json('metrics');
+
+	m[metric] = default_value;
+
+	write_json('metrics', m);
+
     await update_all_players((data, datum) => {
         data[datum[0]][metric] = default_value
     });
 }
 
 async function remove_metric(metric) {
+	let m = read_json('metrics');
+
+	delete m[metric];
+
+	write_json('metrics', m);
+
     await update_all_players((data, datum) => {
         delete data[datum[0]][metric]
     });

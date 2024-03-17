@@ -28,6 +28,8 @@ async function get_thin_website(id) {
 }
 
 async function get_player_rating(id) {
+	console.log(id);
+
 	if (id == 0) {
 		return 0;
 	}
