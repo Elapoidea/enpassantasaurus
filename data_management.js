@@ -14,6 +14,12 @@ async function save_player(data, name, id, affiliation) {
 	}
 
 	write_json('metrics', m);
+
+	let g = read_json('general');
+
+	g['total_players'] += 1;
+
+	write_json('general', g);
 }
 
 async function update_all_players(f) {

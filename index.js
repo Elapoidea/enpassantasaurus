@@ -3,32 +3,7 @@ const path = require('node:path');
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
-let { read_json, write_json } = require('./utils');
-let { update_all_ratings } = require('./data_management');
-
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.once(Events.ClientReady, async readyClient => {
-	console.log(`${readyClient.user.tag} is now online.`);
-
-	let g = read_json('general');
-
-	let d = new Date().getDate();
-
-	if (g['last_data_update'] != d) {
-		g['last_data_update'] = d;
-
-		console.log('Updating data ...');
-		let start_time = performance.now();
-
-		await update_all_ratings();
-
-		console.log(`Data has been updated in ${Math.round((performance.now() - start_time)/100)/10} seconds.`);
-	}
-
-	write_json('general', g);
-
-});
 
 client.login(token);
 
@@ -43,7 +18,6 @@ for (const folder of commandFolders) {
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
 		const command = require(filePath);
-		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
 		} else {
@@ -52,25 +26,15 @@ for (const folder of commandFolders) {
 	}
 }
 
-client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
+const eventsPath = path.join(__dirname, 'events');
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-	const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
-		return;
+for (const file of eventFiles) {
+	const filePath = path.join(eventsPath, file);
+	const event = require(filePath);
+	if (event.once) {
+		client.once(event.name, (...args) => event.execute(...args));
+	} else {
+		client.on(event.name, (...args) => event.execute(...args));
 	}
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-		}
-	}
-});
-
+}

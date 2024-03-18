@@ -69,7 +69,7 @@ function draw_image(data, metric, start) {
 			continue;
 		}
 
-		let y = 2000 / 15 * j + 190;
+		let y = 2000 / 15 * j + 150;
 
 		ctx.fillText(`${j + start + 1}. ${n}`, 0, y);
 		ctx.fillText(`${m}`, 1200, y);
@@ -137,7 +137,7 @@ function generate_affiliation_dropdown(default_selection) {
 	return select
 }
 
-function generate_response(metric, affiliation, start, use_metric_dropdown, use_affiliation_dropdown, use_starting_place) {
+function generate_response(metric, affiliation, start, use_metric_dropdown, use_affiliation_dropdown, use_starting_place, private) {
 	let menus = [];
 
 	if (!metric) {
@@ -181,21 +181,26 @@ function generate_response(metric, affiliation, start, use_metric_dropdown, use_
 		.setLabel('⯯')
 		.setStyle(ButtonStyle.Secondary);
 
+	let reload = new ButtonBuilder()
+		.setCustomId('reload')
+		.setLabel('↻')
+		.setStyle(ButtonStyle.Secondary);
+
 	if (use_starting_place) {
-		menus.push(new ActionRowBuilder().addComponents(full_up, up, down, full_down));
+		menus.push(new ActionRowBuilder().addComponents(full_up, up, down, full_down, reload));
 
 	}
 	
 	return { 
 		content: '', 
 		embeds: [generate_embed()], 
-		ephemeral: true, 
+		ephemeral: private, 
 		files: [draw_image(data, metric, start)], 
 		components: menus,
 	};
 }
 
-async function leaderboard(interaction) {
+async function leaderboard(interaction, private) {
 	let metric = interaction.options.getString('metric');
 	let affiliation = interaction.options.getString('affiliation');
 	let start = interaction.options.getInteger('start');
@@ -209,12 +214,12 @@ async function leaderboard(interaction) {
 		start -= 1;
 	}
 
-	let response = await interaction.reply(generate_response(metric, affiliation, start, use_metric_dropdown, use_affiliation_dropdown, use_starting_place));
+	let settings = [metric, affiliation, start, use_metric_dropdown, use_affiliation_dropdown, use_starting_place, private];
+	let response = await interaction.reply(generate_response(...settings));
 
 	const collector = response.createMessageComponentCollector({ time: 3_600_000 });
 
 	collector.on('collect', async i => {
-		// console.log(i);
 		await i.deferUpdate()
 
 		if (i.customId == 'metric') {
@@ -238,11 +243,11 @@ async function leaderboard(interaction) {
 		}
 
 		if (i.customId == 'full_down') {
-			start = 9999;
+			start = Math.max(read_json('general')['total_players'] - 10, 0);
 		}
 
-
-		await interaction.editReply(generate_response(metric, affiliation, start, use_metric_dropdown, use_affiliation_dropdown, use_starting_place));
+		let settings = [metric, affiliation, start, use_metric_dropdown, use_affiliation_dropdown, use_starting_place, private];
+		await interaction.editReply(generate_response(...settings));
 	});
 }
 
@@ -250,21 +255,50 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('leaderboard')
 		.setDescription('Displays a leaderboard')
-		.addStringOption(option =>
-			option.setName('metric')
-			.setRequired(false)
-			.setDescription('The metric to use to determine the rankings.'))
-		.addStringOption(option =>
-			option.setName('affiliation')
-			.setRequired(false)
-			.setDescription('Show only people who are affiliated with a group.'))		
-		.addIntegerOption(option =>
-			option.setName('start')
-			.setRequired(false)
-			.setDescription('Which rank to start listing people from.')),
+		.addSubcommand(subcommand =>
+			subcommand
+			.setName('private')
+			.setDescription('Creates a leaderboard that stops working after every restart.')
+			.addStringOption(option =>
+				option.setName('metric')
+				.setRequired(false)
+				.setDescription('The metric to use to determine the rankings.'))
+			.addStringOption(option =>
+				option.setName('affiliation')
+				.setRequired(false)
+				.setDescription('Show only people who are affiliated with a group.'))		
+			.addIntegerOption(option =>
+				option.setName('start')
+				.setRequired(false)
+				.setDescription('Which rank to start listing people from.')))
+		.addSubcommand(subcommand =>
+			subcommand
+			.setName('public')
+			.setDescription('Creates a leaderboard that remains useable in the future.')
+			.addStringOption(option =>
+				option.setName('metric')
+				.setRequired(true)
+				.setDescription('The metric to use to determine the rankings.'))
+			.addStringOption(option =>
+				option.setName('affiliation')
+				.setRequired(true)
+				.setDescription('Show only people who are affiliated with a group.'))		
+			.addIntegerOption(option =>
+				option.setName('start')
+				.setRequired(true)
+				.setDescription('Which rank to start listing people from.'))),
 	async execute(interaction) {
-		leaderboard(interaction);
+		let sc = interaction.options.getSubcommand()
+
+		if (sc == 'public') {
+			leaderboard(interaction, false);
+		}
+		
+		if (sc == 'private') {
+			leaderboard(interaction, true);
+		}
 	},
 };
+
 
 

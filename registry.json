@@ -1,1 +1,164 @@
-{"Asher G":{"uscf":30656638,"affiliation":"Collin","rating":"1155","blitz":9,"Collin Wins":1},"Benjamin J":{"uscf":30404623,"affiliation":"UTD","rating":"1370","blitz":-1,"Collin Wins":-1},"David B":{"uscf":14575295,"affiliation":"UTD","rating":"1108","blitz":-1,"Collin Wins":-1},"Jacob K":{"uscf":0,"affiliation":"Collin","rating":0,"blitz":-1,"Collin Wins":2},"Musaab M":{"uscf":0,"affiliation":"Collin","rating":0,"blitz":-1,"Collin Wins":-1},"Shunsuke O":{"uscf":0,"affiliation":"Collin","rating":0,"blitz":-1,"Collin Wins":1},"Ahsaiah S":{"uscf":0,"affiliation":"Collin","rating":0,"blitz":-1,"Collin Wins":1},"Louis C":{"uscf":30678946,"affiliation":"UTD","rating":"1873","blitz":-1,"Collin Wins":-1},"Arturo I":{"uscf":30026121,"affiliation":"UTD","rating":"1924","blitz":-1,"Collin Wins":-1},"Gleb D":{"uscf":30957643,"affiliation":"UTRGV","rating":"2622","blitz":-1,"Collin Wins":-1},"Minh N":{"uscf":31433959,"affiliation":"TTU","rating":"1445","blitz":-1,"Collin Wins":-1},"Aman B":{"uscf":0,"affiliation":"UTD","rating":0,"blitz":5,"Collin Wins":-1}}
+{
+    "Asher G": {
+        "uscf": 30656638,
+        "affiliation": "Collin",
+        "rating": "1155",
+        "blitz": 9,
+        "Collin Wins": 1,
+        "Blitz": 3
+    },
+    "Benjamin J": {
+        "uscf": 30404623,
+        "affiliation": "UTD",
+        "rating": "1370",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "David B": {
+        "uscf": 14575295,
+        "affiliation": "UTD",
+        "rating": "1108",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Jacob K": {
+        "uscf": 0,
+        "affiliation": "Collin",
+        "rating": 0,
+        "blitz": -1,
+        "Collin Wins": 2,
+        "Blitz": -1
+    },
+    "Musaab M": {
+        "uscf": 0,
+        "affiliation": "Collin",
+        "rating": 0,
+        "blitz": -1,
+        "Collin Wins": 0,
+        "Blitz": -1
+    },
+    "Shunsuke O": {
+        "uscf": 0,
+        "affiliation": "Collin",
+        "rating": 0,
+        "blitz": -1,
+        "Collin Wins": 1,
+        "Blitz": -1
+    },
+    "Ahsaiah S": {
+        "uscf": 0,
+        "affiliation": "Collin",
+        "rating": 0,
+        "blitz": -1,
+        "Collin Wins": 1,
+        "Blitz": -1
+    },
+    "Louis C": {
+        "uscf": 30678946,
+        "affiliation": "UTD",
+        "rating": "1879",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Arturo I": {
+        "uscf": 30026121,
+        "affiliation": "UTD",
+        "rating": "1924",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Gleb D": {
+        "uscf": 30957643,
+        "affiliation": "UTRGV",
+        "rating": "2622",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Minh N": {
+        "uscf": 31433959,
+        "affiliation": "TTU",
+        "rating": "1445",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Aman B": {
+        "uscf": 0,
+        "affiliation": "UTD",
+        "rating": 0,
+        "blitz": 5,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Ryan A": {
+        "uscf": 17295220,
+        "affiliation": "Baylor",
+        "rating": "1258",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "David R": {
+        "uscf": 16707622,
+        "affiliation": "TTU",
+        "rating": "1446",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Dheeshana K": {
+        "uscf": 31392326,
+        "affiliation": "TTU",
+        "rating": "1370",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Barrett W": {
+        "uscf": 13478997,
+        "affiliation": "UTD",
+        "rating": "2139",
+        "blitz": -1,
+        "Collin Wins": -1,
+        "Blitz": -1
+    },
+    "Karolis J": {
+        "uscf": 30690953,
+        "affiliation": "UTD",
+        "rating": "2462",
+        "last_update": 1,
+        "total_players": 16,
+        "Blitz": -1,
+        "Collin Wins": -1
+    },
+    "Michael M": {
+        "uscf": 15651261,
+        "affiliation": "TTU",
+        "rating": "1934",
+        "last_update": 1,
+        "total_players": 16,
+        "Blitz": -1,
+        "Collin Wins": -1
+    },
+    "Emil R": {
+        "uscf": 31428876,
+        "affiliation": "TTU",
+        "rating": "2415",
+        "last_update": 1,
+        "total_players": 16,
+        "Blitz": -1,
+        "Collin Wins": -1
+    },
+    "Nathaniel M": {
+        "uscf": 15012516,
+        "affiliation": "TTU",
+        "rating": "2274",
+        "Blitz": -1,
+        "Collin Wins": -1
+    }
+}

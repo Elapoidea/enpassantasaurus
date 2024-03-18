@@ -41,7 +41,10 @@ async function get_player_rating(id) {
 
 	let tournaments = Object.values(dom.window.document.querySelectorAll('td')).filter((t) => t.width == 160)
 	let latest = tournaments[0].innerHTML;
-	let rating = latest.slice(4).replace(/\D/g,'');
+
+	latest = latest.slice(latest.indexOf('>') + 1, latest.indexOf('>') + 5)
+
+	let rating = latest.replace(/\D/g,'');
 
 	return rating;
 }
