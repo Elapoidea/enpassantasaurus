@@ -12,32 +12,6 @@ const {
 const { createCanvas } = require('canvas');
 let { read_json } = require('../../utils');
 
-function arranged_data() {
-	let l = get_players().map(i => [i[0], i[1].rating, i[1].affiliation]);
-
-	l.sort((a, b) => { return b[1] - a[1] });
-
-	return l;
-}
-
-function transpose(data) {
-	return data[0].map((col, i) => data.map(row => row[i]));
-}
-
-function merge_data(data) {
-	let merged = '\`\`\`';
-
-	for (i=0; i<data.length; i++) {
-		// let n = data[i][0].slice(0, data[i][0].indexOf(' ') + 2)
-		let n = data[i][0]
-
-		merged += `${i+1}. ${n} ${' '.repeat(20 - n.length)} ${data[i][1]} (${data[i][2]})\n`;
-	}
-
-	merged += '\`\`\`';
-
-	return merged;
-}
 
 function draw_image(data, metric, start) {
 	let canvas = createCanvas(3000, 1500);
@@ -299,6 +273,3 @@ module.exports = {
 		}
 	},
 };
-
-
-

@@ -27,12 +27,12 @@ async function uscf(interaction) {
 	let name = await get_player_name(id);
 
 	let confirm = new ButtonBuilder()
-		.setCustomId('confirm')
+		.setCustomId('r_confirm')
 		.setLabel('Yes, register them')
 		.setStyle(ButtonStyle.Success);
 
 	let cancel = new ButtonBuilder()
-		.setCustomId('cancel')
+		.setCustomId('r_cancel')
 		.setLabel('No, wrong person')
 		.setStyle(ButtonStyle.Danger);
 
@@ -49,11 +49,11 @@ async function uscf(interaction) {
 	try {
 		const confirmation = await response.awaitMessageComponent({ filter: collectorFilter, time: 60_000 });
 	
-		if (confirmation.customId === 'confirm') {
+		if (confirmation.customId === 'r_confirm') {
 			await confirm_registration(name, id, affiliation);
 
 			await confirmation.update({ content: 'Confirmed', components: [] });
-		} else if (confirmation.customId === 'cancel') {
+		} else if (confirmation.customId === 'r_cancel') {
 			await confirmation.update({ content: 'Cancelled', components: [] });
 		}
 	} catch (e) {
